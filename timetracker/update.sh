@@ -36,11 +36,9 @@ $COMPOSE_CMD down
 echo ""
 echo "Pulling latest changes..."
 
-BRANCH="claude/time-tracking-app-IbshS"
-
 if [ -d ".git" ]; then
     # It's a git repo, pull normally
-    git pull origin "$BRANCH" 2>/dev/null || git pull origin main 2>/dev/null || {
+    git pull origin main 2>/dev/null || git pull origin master 2>/dev/null || {
         echo "Warning: Could not pull from git"
     }
 else
@@ -49,9 +47,9 @@ else
     TEMP_DIR=$(mktemp -d)
 
     if command -v curl &> /dev/null; then
-        curl -sL "https://github.com/CyberTechArmor/SLATE/archive/refs/heads/${BRANCH}.tar.gz" | tar xz -C "$TEMP_DIR"
+        curl -sL https://github.com/CyberTechArmor/SLATE/archive/refs/heads/main.tar.gz | tar xz -C "$TEMP_DIR"
     elif command -v wget &> /dev/null; then
-        wget -qO- "https://github.com/CyberTechArmor/SLATE/archive/refs/heads/${BRANCH}.tar.gz" | tar xz -C "$TEMP_DIR"
+        wget -qO- https://github.com/CyberTechArmor/SLATE/archive/refs/heads/main.tar.gz | tar xz -C "$TEMP_DIR"
     else
         echo "Error: curl or wget is required for updates"
         exit 1
@@ -62,9 +60,8 @@ else
         cp .env "$TEMP_DIR/.env.backup"
     fi
 
-    # Copy new files (branch name has slashes replaced with dashes in archive)
-    ARCHIVE_DIR="SLATE-claude-time-tracking-app-IbshS"
-    cp -r "$TEMP_DIR"/$ARCHIVE_DIR/timetracker/* "$SCRIPT_DIR/"
+    # Copy new files
+    cp -r "$TEMP_DIR"/SLATE-main/timetracker/* "$SCRIPT_DIR/"
 
     # Restore .env
     if [ -f "$TEMP_DIR/.env.backup" ]; then
