@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 
         // Get total count
         const countResult = await db.query(
-            `SELECT COUNT(*) FROM clients ${whereClause}`,
+            `SELECT COUNT(*) FROM clients c ${whereClause}`,
             params
         );
         const total = parseInt(countResult.rows[0].count, 10);
