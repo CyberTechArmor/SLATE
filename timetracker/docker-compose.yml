@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - "1440:3000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://${POSTGRES_USER:-timetrack}:${POSTGRES_PASSWORD:-timetrack}@db:5432/${POSTGRES_DB:-timetrack}

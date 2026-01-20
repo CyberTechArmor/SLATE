@@ -55,14 +55,14 @@ EOF
 # Start the application
 docker compose up -d --build
 
-# Access at http://localhost:3000
+# Access at http://localhost:1440
 ```
 
 ### First User Setup
 
 **The first user to sign up becomes the admin!**
 
-1. Go to http://localhost:3000
+1. Go to http://localhost:1440
 2. Click "Create an account"
 3. Fill in your details - this account will have administrator privileges
 4. Additional users can sign up afterward with regular privileges
