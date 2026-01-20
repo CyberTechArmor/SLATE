@@ -219,6 +219,80 @@ router.post('/client/logout', async (req, res) => {
     }
 });
 
+// User signup
+router.post('/signup', validateBody('signup'), async (req, res) => {
+    try {
+        const { email, password, name } = req.body;
+
+        // Check if email already exists
+        const existing = await db.query(
+            'SELECT id FROM users WHERE email = $1',
+            [email.toLowerCase()]
+        );
+
+        if (existing.rows.length > 0) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+
+        // Check if this is the first user (will be admin)
+        const userCount = await db.query('SELECT COUNT(*) as count FROM users');
+        const isFirstUser = parseInt(userCount.rows[0].count, 10) === 0;
+
+        // Hash password
+        const passwordHash = await hashPassword(password);
+
+        // Create user
+        const result = await db.query(
+            'INSERT INTO users (email, password_hash, name, is_admin) VALUES ($1, $2, $3, $4) RETURNING id, email, name, is_admin',
+            [email.toLowerCase(), passwordHash, name, isFirstUser]
+        );
+
+        const user = result.rows[0];
+
+        // Create session
+        const { sessionId, expiresAt } = await createSession(
+            user.id,
+            null,
+            'user',
+            false
+        );
+
+        // Set cookie
+        res.cookie('session', sessionId, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            expires: expiresAt
+        });
+
+        res.status(201).json({
+            success: true,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                isAdmin: user.is_admin
+            },
+            isFirstUser
+        });
+    } catch (err) {
+        console.error('Signup error:', err);
+        res.status(500).json({ error: 'An error occurred during signup' });
+    }
+});
+
+// Check if any users exist (for showing signup vs login)
+router.get('/has-users', async (req, res) => {
+    try {
+        const result = await db.query('SELECT COUNT(*) as count FROM users');
+        const hasUsers = parseInt(result.rows[0].count, 10) > 0;
+        res.json({ hasUsers });
+    } catch (err) {
+        console.error('Check users error:', err);
+        res.status(500).json({ error: 'An error occurred' });
+    }
+});
+
 // Change password (for logged in user)
 router.post('/change-password', requireAuth, async (req, res) => {
     try {

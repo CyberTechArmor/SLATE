@@ -33,7 +33,7 @@
                 <div class="form-group">
                     <label for="email" class="form-label">Email address</label>
                     <div class="input-icon-wrapper">
-                        <input type="email" id="email" name="email" class="form-input" placeholder="admin@localhost" required>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required>
                         <span class="input-icon"><i data-lucide="mail"></i></span>
                     </div>
                 </div>
@@ -65,7 +65,8 @@
             </form>
 
             <div class="login-footer">
-                <p>Client portal? <a href="/client/login.html">Sign in here</a></p>
+                <p>Don't have an account? <a href="/signup.html">Create an account</a></p>
+                <p style="margin-top: var(--spacing-2);">Client portal? <a href="/client/login.html">Sign in here</a></p>
             </div>
         </div>
     </div>
@@ -73,6 +74,21 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Check if there are any users - if not, redirect to signup
+        async function checkUsers() {
+            try {
+                const response = await fetch('/api/auth/has-users');
+                const data = await response.json();
+                if (!data.hasUsers) {
+                    window.location.href = '/signup.html';
+                }
+            } catch (err) {
+                console.error('Error checking users:', err);
+            }
+        }
+
+        checkUsers();
 
         const form = document.getElementById('loginForm');
         const errorDiv = document.getElementById('loginError');

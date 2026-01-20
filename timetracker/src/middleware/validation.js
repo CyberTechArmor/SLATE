@@ -170,6 +170,12 @@ const schemas = {
     login: {
         email: [rules.required, rules.email],
         password: [rules.required]
+    },
+
+    signup: {
+        email: [rules.required, rules.email, rules.maxLength(255)],
+        password: [rules.required, rules.minLength(6)],
+        name: [rules.required, rules.maxLength(255)]
     }
 };
 
