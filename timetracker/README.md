@@ -23,24 +23,49 @@ A modern time tracking application with a client portal. Track billable hours in
 
 ## Quick Start
 
-### Using Docker (Recommended)
+### One-Line Install (Recommended)
 
 ```bash
-# Clone or download the project
-cd timetracker
+curl -fsSL https://raw.githubusercontent.com/CyberTechArmor/SLATE/main/timetracker/install.sh | bash
+```
+
+This will:
+1. Clone the repository
+2. Generate secure random credentials for PostgreSQL and session secrets
+3. Build and start the Docker containers
+4. Save credentials securely to `.env`
+
+### Manual Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/CyberTechArmor/SLATE.git
+cd SLATE/timetracker
+
+# Create .env file with your credentials
+cat > .env << EOF
+POSTGRES_USER=timetrack
+POSTGRES_PASSWORD=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)
+POSTGRES_DB=timetrack
+SESSION_SECRET=$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 32)
+NODE_ENV=production
+PORT=3000
+EOF
 
 # Start the application
-docker compose up -d
+docker compose up -d --build
 
 # Access at http://localhost:3000
 ```
 
-### Default Credentials
+### First User Setup
 
-- **Admin Email**: admin@localhost
-- **Admin Password**: admin
+**The first user to sign up becomes the admin!**
 
-Change your password after first login!
+1. Go to http://localhost:3000
+2. Click "Create an account"
+3. Fill in your details - this account will have administrator privileges
+4. Additional users can sign up afterward with regular privileges
 
 ## Development
 
@@ -99,9 +124,11 @@ timetracker/
 ## API Endpoints
 
 ### Authentication
+- `POST /api/auth/signup` - Create new user account
 - `POST /api/auth/login` - User login
 - `POST /api/auth/logout` - Logout
 - `GET /api/auth/me` - Get current user
+- `GET /api/auth/has-users` - Check if any users exist
 - `POST /api/auth/client/login` - Client login
 
 ### Clients
@@ -159,6 +186,18 @@ timetracker/
 | `NODE_ENV` | Environment | development |
 | `DATABASE_URL` | PostgreSQL connection string | - |
 | `SESSION_SECRET` | Session signing secret | - |
+| `POSTGRES_USER` | PostgreSQL username | timetrack |
+| `POSTGRES_PASSWORD` | PostgreSQL password | - |
+| `POSTGRES_DB` | PostgreSQL database name | timetrack |
+
+## Security
+
+- All credentials are dynamically generated during installation
+- Passwords are hashed using bcrypt with cost factor 12
+- Sessions are stored server-side with secure HTTP-only cookies
+- CSRF protection enabled
+- Rate limiting on authentication endpoints
+- The `.env` file is created with restricted permissions (600)
 
 ## License
 

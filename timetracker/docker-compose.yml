@@ -7,7 +7,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://timetrack:timetrack@db:5432/timetrack
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-timetrack}:${POSTGRES_PASSWORD:-timetrack}@db:5432/${POSTGRES_DB:-timetrack}
       - SESSION_SECRET=${SESSION_SECRET:-changeme-in-production}
       - PORT=3000
     depends_on:
@@ -20,14 +20,14 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      - POSTGRES_USER=timetrack
-      - POSTGRES_PASSWORD=timetrack
-      - POSTGRES_DB=timetrack
+      - POSTGRES_USER=${POSTGRES_USER:-timetrack}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-timetrack}
+      - POSTGRES_DB=${POSTGRES_DB:-timetrack}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U timetrack"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-timetrack}"]
       interval: 5s
       timeout: 5s
       retries: 5
