@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TimeTracker</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="clock"></i>
+                    <span>TimeTracker</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/user/dashboard.html" class="nav-item active">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/user/entries.html" class="nav-item">
+                        <i data-lucide="clock"></i>
+                        <span>Time Entries</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Manage</div>
+                    <a href="/user/clients.html" class="nav-item">
+                        <i data-lucide="users"></i>
+                        <span>Clients</span>
+                    </a>
+                    <a href="/user/projects.html" class="nav-item">
+                        <i data-lucide="folder"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="/user/invoices.html" class="nav-item">
+                        <i data-lucide="file-text"></i>
+                        <span>Invoices</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Admin</div>
+                        <div class="user-role">Service Provider</div>
+                    </div>
+                    <i data-lucide="log-out" style="width: 18px; height: 18px; color: var(--color-gray-400);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar Overlay (Mobile) -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebarToggle">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 class="page-title">Dashboard</h1>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="openQuickAdd()">
+                        <i data-lucide="plus"></i>
+                        <span class="hide-mobile">Add Entry</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card stagger-item">
+                        <div class="stat-header">
+                            <div class="stat-icon blue">
+                                <i data-lucide="clock"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value animate-count" id="statToday">0</div>
+                        <div class="stat-label">Hours Today</div>
+                    </div>
+
+                    <div class="stat-card stagger-item">
+                        <div class="stat-header">
+                            <div class="stat-icon green">
+                                <i data-lucide="calendar-days"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value animate-count" id="statWeek">0</div>
+                        <div class="stat-label">Hours This Week</div>
+                    </div>
+
+                    <div class="stat-card stagger-item">
+                        <div class="stat-header">
+                            <div class="stat-icon blue">
+                                <i data-lucide="calendar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value animate-count" id="statMonth">0</div>
+                        <div class="stat-label">Hours This Month</div>
+                    </div>
+
+                    <div class="stat-card stagger-item">
+                        <div class="stat-header">
+                            <div class="stat-icon yellow">
+                                <i data-lucide="dollar-sign"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value animate-count" id="statUnbilled">0</div>
+                        <div class="stat-label">Unbilled Hours</div>
+                        <div class="text-sm text-gray-500 mt-1" id="statUnbilledAmount">$0.00</div>
+                    </div>
+                </div>
+
+                <!-- Quick Add Widget -->
+                <div class="quick-add-widget stagger-item" id="quickAddWidget">
+                    <div class="quick-add-header">
+                        <i data-lucide="plus-circle"></i>
+                        <span>Quick Add Time Entry</span>
+                    </div>
+                    <form class="quick-add-form" id="quickAddForm">
+                        <div class="form-group">
+                            <label class="form-label">Client</label>
+                            <select id="qaClient" required>
+                                <option value="">Select client...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Project <span class="form-label-optional">(optional)</span></label>
+                            <select id="qaProject">
+                                <option value="">No project</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" id="qaDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration</label>
+                            <div class="input-suffix-wrapper">
+                                <input type="number" id="qaDuration" step="0.1" min="0.1" value="1.0" required>
+                                <span class="input-suffix">hrs</span>
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex: 2;">
+                            <label class="form-label">Title</label>
+                            <input type="text" id="qaTitle" placeholder="What did you work on?" required>
+                        </div>
+                        <div class="form-group" style="align-self: flex-end;">
+                            <button type="submit" class="btn btn-primary">
+                                <i data-lucide="plus"></i>
+                                Add
+                            </button>
+                        </div>
+                    </form>
+                    <div class="duration-quick-btns mt-2">
+                        <span class="text-xs text-gray-500 mr-2">Quick:</span>
+                        <button type="button" class="duration-quick-btn" data-duration="0.1">0.1</button>
+                        <button type="button" class="duration-quick-btn" data-duration="0.25">0.25</button>
+                        <button type="button" class="duration-quick-btn" data-duration="0.5">0.5</button>
+                        <button type="button" class="duration-quick-btn active" data-duration="1.0">1.0</button>
+                        <button type="button" class="duration-quick-btn" data-duration="2.0">2.0</button>
+                        <button type="button" class="duration-quick-btn" data-duration="4.0">4.0</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Chart and Recent Activity -->
+                    <div>
+                        <!-- Last 7 Days Chart -->
+                        <div class="chart-widget stagger-item mb-6">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Last 7 Days</h3>
+                            </div>
+                            <div class="chart-container">
+                                <div class="bar-chart" id="weekChart">
+                                    <!-- Bars will be generated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="recent-activity stagger-item">
+                            <div class="activity-header">
+                                <h3 class="activity-title">Recent Activity</h3>
+                                <a href="/user/entries.html" class="btn btn-ghost btn-sm">View All</a>
+                            </div>
+                            <div class="activity-list" id="activityList">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clients Summary -->
+                    <div class="clients-summary stagger-item">
+                        <div class="summary-header">
+                            <h3 class="summary-title">Unbilled by Client</h3>
+                            <a href="/user/clients.html" class="btn btn-ghost btn-sm">View All</a>
+                        </div>
+                        <div class="summary-list" id="clientsSummary">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for detailed entry -->
+    <div class="modal-backdrop" id="entryModal" style="display: none;">
+        <div class="modal-content" style="max-width: 600px; width: 90%; margin: auto; background: white; border-radius: var(--radius-xl); max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header p-4" style="border-bottom: 1px solid var(--color-gray-200);">
+                <h3 id="modalTitle">Add Time Entry</h3>
+                <button class="btn btn-ghost btn-icon" onclick="closeModal()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form class="modal-form" id="entryForm">
+                <input type="hidden" id="entryId">
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Client</label>
+                        <select id="entryClient" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Project</label>
+                        <select id="entryProject"><option value="">No project</option></select>
+                    </div>
+                </div>
+                <div class="form-row cols-3">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" id="entryDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" id="entryStartTime">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Duration (hrs)</label>
+                        <input type="number" id="entryDuration" step="0.1" min="0.1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="entryTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="entryDescription" class="small"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Internal Notes <span class="form-label-optional">(hidden from client)</span></label>
+                    <textarea id="entryNotes" class="small"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="toggle-wrapper">
+                        <div class="toggle">
+                            <input type="checkbox" id="entryBillable" checked>
+                            <span class="toggle-slider"></span>
+                        </div>
+                        <span class="toggle-label">Billable</span>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/websocket.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/components/charts.js"></script>
+    <script src="/js/pages/dashboard.js"></script>
+</body>
+</html>

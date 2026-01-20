@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients - TimeTracker</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="clock"></i>
+                    <span>TimeTracker</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/user/dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/user/entries.html" class="nav-item">
+                        <i data-lucide="clock"></i>
+                        <span>Time Entries</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Manage</div>
+                    <a href="/user/clients.html" class="nav-item active">
+                        <i data-lucide="users"></i>
+                        <span>Clients</span>
+                    </a>
+                    <a href="/user/projects.html" class="nav-item">
+                        <i data-lucide="folder"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="/user/invoices.html" class="nav-item">
+                        <i data-lucide="file-text"></i>
+                        <span>Invoices</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <div class="user-name">Admin</div>
+                        <div class="user-role">Service Provider</div>
+                    </div>
+                    <i data-lucide="log-out" style="width: 18px; height: 18px; color: var(--color-gray-400);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebarToggle">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 class="page-title">Clients</h1>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="openClientModal()">
+                        <i data-lucide="plus"></i>
+                        <span class="hide-mobile">Add Client</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Search and Filter -->
+                <div class="flex gap-4 mb-4 flex-wrap">
+                    <div class="search-input" style="flex: 1; min-width: 200px;">
+                        <input type="text" id="searchInput" placeholder="Search clients...">
+                        <span class="search-icon"><i data-lucide="search"></i></span>
+                    </div>
+                    <select id="statusFilter" style="min-width: 150px;">
+                        <option value="all">All Status</option>
+                        <option value="active" selected>Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Clients Grid -->
+                <div class="grid grid-cols-3" id="clientsGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Client Modal -->
+    <div class="modal-backdrop" id="clientModal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; width: 90%; margin: auto; background: white; border-radius: var(--radius-xl); max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header p-4 flex justify-between items-center" style="border-bottom: 1px solid var(--color-gray-200);">
+                <h3 id="modalTitle">Add Client</h3>
+                <button class="btn btn-ghost btn-icon" onclick="closeModal()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form class="modal-form" id="clientForm">
+                <input type="hidden" id="clientId">
+                <div class="form-group">
+                    <label class="form-label">Company/Client Name</label>
+                    <input type="text" id="clientName" required>
+                </div>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Contact Name</label>
+                        <input type="text" id="clientContact">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" id="clientPhone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email (used for client login)</label>
+                    <input type="email" id="clientEmail" required>
+                </div>
+                <div class="form-group" id="passwordGroup">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="clientPassword" minlength="6">
+                    <div class="form-help">Leave blank to keep existing password when editing</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <textarea id="clientAddress" class="small"></textarea>
+                </div>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Default Hourly Rate ($)</label>
+                        <input type="number" id="clientRate" step="0.01" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select id="clientStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-danger" id="deleteClientBtn" style="margin-right: auto; display: none;" onclick="deleteClient()">Delete</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/websocket.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/clients.js"></script>
+</body>
+</html>

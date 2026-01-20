@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - TimeTracker</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="client-portal">
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="clock"></i>
+                    <span>TimeTracker</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Portal</div>
+                    <a href="/client/dashboard.html" class="nav-item active">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/client/entries.html" class="nav-item">
+                        <i data-lucide="clock"></i>
+                        <span>Time Entries</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="clientAvatar">C</div>
+                    <div class="user-info">
+                        <div class="user-name" id="clientName">Client</div>
+                        <div class="user-role">Client Portal</div>
+                    </div>
+                    <i data-lucide="log-out" style="width: 18px; height: 18px; color: var(--color-gray-400);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebarToggle">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 class="page-title">Dashboard</h1>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="exportCSV()">
+                        <i data-lucide="download"></i>
+                        <span class="hide-mobile">Export</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Welcome -->
+                <div class="client-dashboard-header">
+                    <div>
+                        <h2 class="client-welcome" id="welcomeMessage">Welcome back</h2>
+                        <p class="text-gray-500">Here's an overview of your tracked time</p>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="client-stats-grid">
+                    <div class="stat-card stagger-item">
+                        <div class="stat-header">
+                            <div class="stat-icon blue">
+                                <i data-lucide="calendar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value animate-count" id="monthHours">0</div>
+                        <div class="stat-label">Hours This Month</div>
+                    </div>
+
+                    <div class="stat-card stagger-item">
+                        <div class="stat-header">
+                            <div class="stat-icon yellow">
+                                <i data-lucide="clock"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value animate-count" id="unbilledHours">0</div>
+                        <div class="stat-label">Unbilled Hours</div>
+                    </div>
+
+                    <div class="stat-card stagger-item">
+                        <div class="stat-header">
+                            <div class="stat-icon green">
+                                <i data-lucide="folder"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value animate-count" id="projectCount">0</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Hours by Project -->
+                    <div class="project-breakdown stagger-item">
+                        <h3 class="card-title mb-4">Hours by Project (This Month)</h3>
+                        <div id="projectBreakdown">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Entries -->
+                    <div class="recent-activity stagger-item">
+                        <div class="activity-header">
+                            <h3 class="activity-title">Recent Time Entries</h3>
+                            <a href="/client/entries.html" class="btn btn-ghost btn-sm">View All</a>
+                        </div>
+                        <div class="activity-list" id="recentEntries">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-bottom-nav">
+            <div class="mobile-nav-items">
+                <a href="/client/dashboard.html" class="mobile-nav-item active">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/client/entries.html" class="mobile-nav-item">
+                    <i data-lucide="clock"></i>
+                    <span>Entries</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/websocket.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/client-dashboard.js"></script>
+</body>
+</html>

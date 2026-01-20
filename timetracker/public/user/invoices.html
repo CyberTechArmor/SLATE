@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices - TimeTracker</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <link rel="stylesheet" href="/css/print.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="clock"></i>
+                    <span>TimeTracker</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <a href="/user/dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/user/entries.html" class="nav-item">
+                        <i data-lucide="clock"></i>
+                        <span>Time Entries</span>
+                    </a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Manage</div>
+                    <a href="/user/clients.html" class="nav-item">
+                        <i data-lucide="users"></i>
+                        <span>Clients</span>
+                    </a>
+                    <a href="/user/projects.html" class="nav-item">
+                        <i data-lucide="folder"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="/user/invoices.html" class="nav-item active">
+                        <i data-lucide="file-text"></i>
+                        <span>Invoices</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <div class="user-name">Admin</div>
+                        <div class="user-role">Service Provider</div>
+                    </div>
+                    <i data-lucide="log-out" style="width: 18px; height: 18px; color: var(--color-gray-400);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebarToggle">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 class="page-title">Invoices</h1>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="openCreateInvoice()">
+                        <i data-lucide="plus"></i>
+                        <span class="hide-mobile">Create Invoice</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Summary Cards -->
+                <div class="stats-grid mb-6" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="stat-card">
+                        <div class="stat-value text-gray-600" id="draftCount">0</div>
+                        <div class="stat-label">Draft</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value text-accent" id="sentCount">0</div>
+                        <div class="stat-label">Sent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value text-success" id="paidCount">0</div>
+                        <div class="stat-label">Paid</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value text-error" id="overdueCount">0</div>
+                        <div class="stat-label">Overdue</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex gap-4 mb-4 flex-wrap">
+                    <select id="clientFilter" style="min-width: 200px;">
+                        <option value="">All Clients</option>
+                    </select>
+                    <select id="statusFilter" style="min-width: 150px;">
+                        <option value="">All Status</option>
+                        <option value="draft">Draft</option>
+                        <option value="sent">Sent</option>
+                        <option value="paid">Paid</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                </div>
+
+                <!-- Invoices Table -->
+                <div class="table-container">
+                    <table id="invoicesTable">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Client</th>
+                                <th>Date</th>
+                                <th>Due Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesBody">
+                            <tr>
+                                <td colspan="7" class="loading">
+                                    <div class="spinner"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Invoice Modal -->
+    <div class="modal-backdrop" id="createInvoiceModal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px; width: 95%; margin: auto; background: white; border-radius: var(--radius-xl); max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header p-4 flex justify-between items-center" style="border-bottom: 1px solid var(--color-gray-200);">
+                <h3>Create Invoice</h3>
+                <button class="btn btn-ghost btn-icon" onclick="closeCreateModal()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-form">
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Client</label>
+                        <select id="invoiceClient" required onchange="loadUnbilledEntries()">
+                            <option value="">Select a client...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Issue Date</label>
+                        <input type="date" id="invoiceDate" required>
+                    </div>
+                </div>
+                <div class="form-row cols-2">
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" id="invoiceDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tax Rate (%)</label>
+                        <input type="number" id="invoiceTaxRate" step="0.01" min="0" value="0">
+                    </div>
+                </div>
+
+                <!-- Unbilled Entries Selection -->
+                <div class="form-group">
+                    <label class="form-label">Select Time Entries</label>
+                    <div id="unbilledEntries" class="p-4 border rounded-lg" style="max-height: 300px; overflow-y: auto; background: var(--color-gray-50);">
+                        <p class="text-sm text-gray-500">Select a client to see unbilled entries</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes <span class="form-label-optional">(shown on invoice)</span></label>
+                    <textarea id="invoiceNotes" class="small" placeholder="Thank you for your business!"></textarea>
+                </div>
+
+                <!-- Totals -->
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-600">Selected Hours:</span>
+                        <span class="font-semibold" id="totalHours">0 hrs</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-600">Subtotal:</span>
+                        <span class="font-semibold" id="subtotal">$0.00</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-600">Tax:</span>
+                        <span id="taxAmount">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold">
+                        <span>Total:</span>
+                        <span id="grandTotal">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createInvoice()">Create Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Invoice Modal -->
+    <div class="modal-backdrop" id="viewInvoiceModal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px; width: 95%; margin: auto; background: white; border-radius: var(--radius-xl); max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header p-4 flex justify-between items-center" style="border-bottom: 1px solid var(--color-gray-200);">
+                <h3 id="viewInvoiceTitle">Invoice</h3>
+                <div class="flex gap-2">
+                    <button class="btn btn-secondary" onclick="printInvoice()">
+                        <i data-lucide="printer"></i>
+                        Print
+                    </button>
+                    <button class="btn btn-ghost btn-icon" onclick="closeViewModal()">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6" id="invoiceContent">
+                <!-- Invoice content will be loaded here -->
+            </div>
+            <div class="form-actions p-4" style="border-top: 1px solid var(--color-gray-200);">
+                <button type="button" class="btn btn-danger" id="deleteInvoiceBtn" style="margin-right: auto;" onclick="deleteInvoice()">Delete</button>
+                <button type="button" class="btn btn-secondary" id="markSentBtn" onclick="markAsSent()">Mark as Sent</button>
+                <button type="button" class="btn btn-success" id="markPaidBtn" onclick="markAsPaid()">Mark as Paid</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/websocket.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/invoices.js"></script>
+</body>
+</html>

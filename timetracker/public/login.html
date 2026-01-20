@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - TimeTracker</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card scale-in">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i data-lucide="clock"></i>
+                    <span>TimeTracker</span>
+                </div>
+                <h1 class="login-title">Welcome back</h1>
+                <p class="login-subtitle">Sign in to your account</p>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="alert alert-error" id="loginError" style="display: none;">
+                    <i data-lucide="alert-circle"></i>
+                    <span id="loginErrorText"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email address</label>
+                    <div class="input-icon-wrapper">
+                        <input type="email" id="email" name="email" class="form-input" placeholder="admin@localhost" required>
+                        <span class="input-icon"><i data-lucide="mail"></i></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-icon-wrapper">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
+                        <span class="input-icon"><i data-lucide="lock"></i></span>
+                    </div>
+                </div>
+
+                <div class="login-remember">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" name="remember" id="remember">
+                        <span class="checkbox-custom">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="checkbox-label">Remember me</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" id="loginBtn">
+                    <span id="loginBtnText">Sign in</span>
+                    <span id="loginBtnSpinner" class="spinner" style="display: none; width: 18px; height: 18px;"></span>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Client portal? <a href="/client/login.html">Sign in here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        const form = document.getElementById('loginForm');
+        const errorDiv = document.getElementById('loginError');
+        const errorText = document.getElementById('loginErrorText');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('loginBtnText');
+        const btnSpinner = document.getElementById('loginBtnSpinner');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Hide previous error
+            errorDiv.style.display = 'none';
+
+            // Show loading state
+            loginBtn.disabled = true;
+            btnText.textContent = 'Signing in...';
+            btnSpinner.style.display = 'block';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCookie('csrf')
+                    },
+                    body: JSON.stringify({ email, password, remember })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = '/user/dashboard.html';
+                } else {
+                    showError(data.error || 'Login failed');
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+            } finally {
+                loginBtn.disabled = false;
+                btnText.textContent = 'Sign in';
+                btnSpinner.style.display = 'none';
+            }
+        });
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorDiv.style.display = 'flex';
+            errorDiv.classList.add('shake');
+            setTimeout(() => errorDiv.classList.remove('shake'), 500);
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return '';
+        }
+    </script>
+</body>
+</html>
