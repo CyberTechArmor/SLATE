@@ -1,4 +1,4 @@
-// WebSocket Client for TimeTracker
+// WebSocket Client for Slate
 
 class WebSocketClient {
     constructor() {

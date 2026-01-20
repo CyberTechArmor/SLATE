@@ -150,7 +150,7 @@ setInterval(async () => {
 server.listen(PORT, () => {
     console.log(`
 ╔═══════════════════════════════════════════╗
-║         TimeTracker Server                ║
+║         Slate Server                ║
 ╠═══════════════════════════════════════════╣
 ║  Server running on port ${PORT}             ║
 ║  Environment: ${process.env.NODE_ENV || 'development'}            ║

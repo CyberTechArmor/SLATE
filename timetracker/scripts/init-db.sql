@@ -1,4 +1,4 @@
--- TimeTracker Database Schema
+-- Slate Database Schema
 -- Initialize tables for the time tracking application
 
 -- Drop tables if they exist (for clean initialization)

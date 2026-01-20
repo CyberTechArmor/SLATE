@@ -1,4 +1,4 @@
-# TimeTracker
+# Slate
 
 A modern time tracking application with a client portal. Track billable hours in 6-minute (0.1 hour) increments, manage clients and projects, attach resources, and generate invoices.
 
