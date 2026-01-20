@@ -357,17 +357,19 @@ function initCommonUI() {
     const overlay = document.getElementById('sidebarOverlay');
 
     if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => {
+        sidebarToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             sidebar.classList.toggle('open');
             if (overlay) overlay.classList.toggle('open');
         });
+    }
 
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('open');
-            });
-        }
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            if (sidebar) sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        });
     }
 
     // User profile logout
@@ -400,3 +402,6 @@ function initCommonUI() {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initCommonUI);
+
+// Also expose initCommonUI globally for re-initialization
+window.initCommonUI = initCommonUI;

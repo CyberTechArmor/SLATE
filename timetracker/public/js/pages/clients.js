@@ -102,34 +102,45 @@ function setupEventListeners() {
     const searchInput = document.getElementById('searchInput');
     let searchTimeout;
 
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            currentSearch = e.target.value;
-            currentPage = 1;
-            loadClients();
-        }, 300);
-    });
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                currentSearch = e.target.value;
+                currentPage = 1;
+                loadClients();
+            }, 300);
+        });
+    }
 
     // Status filter
-    document.getElementById('statusFilter').addEventListener('change', (e) => {
-        currentStatus = e.target.value;
-        currentPage = 1;
-        loadClients();
-    });
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', (e) => {
+            currentStatus = e.target.value;
+            currentPage = 1;
+            loadClients();
+        });
+    }
 
     // Form submission
-    document.getElementById('clientForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await saveClient();
-    });
+    const clientForm = document.getElementById('clientForm');
+    if (clientForm) {
+        clientForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await saveClient();
+        });
+    }
 
     // Close modal on backdrop click
-    document.getElementById('clientModal').addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal-backdrop')) {
-            closeModal();
-        }
-    });
+    const clientModal = document.getElementById('clientModal');
+    if (clientModal) {
+        clientModal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-backdrop')) {
+                closeModal();
+            }
+        });
+    }
 }
 
 function openClientModal(client = null) {
