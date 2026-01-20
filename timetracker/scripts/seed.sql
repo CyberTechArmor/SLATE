@@ -1,4 +1,4 @@
--- Seed data for TimeTracker
+-- Seed data for Slate
 -- Note: Passwords are hashed versions of 'password123'
 -- In production, use the install script to create the admin user
 

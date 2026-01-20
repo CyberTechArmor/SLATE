@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# TimeTracker - Single Line Install Script
+# Slate - Single Line Install Script
 # Usage: curl -fsSL https://raw.githubusercontent.com/CyberTechArmor/SLATE/main/timetracker/install.sh | bash
 
 set -e
 
 echo ""
 echo "╔═══════════════════════════════════════════╗"
-echo "║       TimeTracker Installation            ║"
+echo "║       Slate Installation            ║"
 echo "╚═══════════════════════════════════════════╝"
 echo ""
 
@@ -56,7 +56,7 @@ fi
 
 # Clone repository
 echo ""
-echo "Cloning TimeTracker from CyberTechArmor/SLATE..."
+echo "Cloning Slate from CyberTechArmor/SLATE..."
 git clone --depth 1 https://github.com/CyberTechArmor/SLATE.git "$INSTALL_DIR-temp"
 mv "$INSTALL_DIR-temp/timetracker" "$INSTALL_DIR"
 rm -rf "$INSTALL_DIR-temp"
@@ -83,7 +83,7 @@ POSTGRES_DB="timetrack_db"
 
 # Create .env file with all credentials
 cat > .env << EOF
-# TimeTracker Configuration
+# Slate Configuration
 # Generated on $(date)
 # WARNING: Keep this file secure and do not commit to version control
 
@@ -107,7 +107,7 @@ echo "✓ Secure credentials generated and saved to .env"
 
 # Start services
 echo ""
-echo "Building and starting TimeTracker services..."
+echo "Building and starting Slate services..."
 $COMPOSE_CMD up -d --build
 
 # Wait for database to be ready
@@ -126,7 +126,7 @@ fi
 
 echo ""
 echo "╔═══════════════════════════════════════════╗"
-echo "║     TimeTracker installed successfully!   ║"
+echo "║     Slate installed successfully!   ║"
 echo "╚═══════════════════════════════════════════╝"
 echo ""
 echo "Access the application at: http://localhost:1440"

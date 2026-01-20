@@ -1,4 +1,4 @@
-// API Wrapper for TimeTracker
+// API Wrapper for Slate
 
 const API = {
     // Get CSRF token from cookie

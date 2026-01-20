@@ -1,4 +1,4 @@
-// Simple SVG Charts for TimeTracker
+// Simple SVG Charts for Slate
 
 // Bar Chart
 function renderBarChart(containerId, data, options = {}) {
