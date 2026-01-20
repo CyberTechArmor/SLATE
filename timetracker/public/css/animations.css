@@ -373,6 +373,64 @@
     animation: checkmark 0.5s ease-out 0.2s forwards;
 }
 
+/* Page Transitions */
+.main-content {
+    transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+}
+
+.main-content.page-exit {
+    opacity: 0;
+    transform: translateY(-5px);
+}
+
+.main-content.page-enter {
+    animation: pageEnter 0.2s ease-out;
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* View Transitions API (for supported browsers) */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root) {
+    animation: fade-out 0.1s ease-out;
+}
+
+::view-transition-new(root) {
+    animation: fade-in 0.15s ease-out;
+}
+
+@keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Prevent layout shift during navigation */
+.sidebar {
+    view-transition-name: sidebar;
+}
+
+::view-transition-old(sidebar),
+::view-transition-new(sidebar) {
+    animation: none;
+}
+
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
     *,
