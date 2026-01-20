@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Entries - Client Portal - TimeTracker</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="client-portal">
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="clock"></i>
+                    <span>TimeTracker</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Portal</div>
+                    <a href="/client/dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/client/entries.html" class="nav-item active">
+                        <i data-lucide="clock"></i>
+                        <span>Time Entries</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="clientAvatar">C</div>
+                    <div class="user-info">
+                        <div class="user-name" id="clientName">Client</div>
+                        <div class="user-role">Client Portal</div>
+                    </div>
+                    <i data-lucide="log-out" style="width: 18px; height: 18px; color: var(--color-gray-400);"></i>
+                </div>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            <header class="page-header">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebarToggle">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 class="page-title">Time Entries</h1>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="exportCSV()">
+                        <i data-lucide="download"></i>
+                        <span class="hide-mobile">Export CSV</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Filters -->
+                <div class="filter-form">
+                    <div class="form-group">
+                        <label class="form-label">Project</label>
+                        <select id="filterProject">
+                            <option value="">All Projects</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">From</label>
+                        <input type="date" id="filterDateFrom">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">To</label>
+                        <input type="date" id="filterDateTo">
+                    </div>
+                    <button class="btn btn-secondary" onclick="applyFilters()">
+                        <i data-lucide="filter"></i>
+                        Filter
+                    </button>
+                    <button class="btn btn-ghost" onclick="clearFilters()">Clear</button>
+                </div>
+
+                <!-- Summary -->
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-sm text-gray-500">
+                        <span id="totalEntries">0</span> entries &middot;
+                        <span id="totalHours">0</span> hours
+                    </div>
+                </div>
+
+                <!-- Entries List -->
+                <div class="entry-list" id="entriesList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-bottom-nav">
+            <div class="mobile-nav-items">
+                <a href="/client/dashboard.html" class="mobile-nav-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/client/entries.html" class="mobile-nav-item active">
+                    <i data-lucide="clock"></i>
+                    <span>Entries</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Entry Detail Modal -->
+    <div class="modal-backdrop" id="entryModal" style="display: none;">
+        <div class="modal-content" style="max-width: 600px; width: 90%; margin: auto; background: white; border-radius: var(--radius-xl); max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header p-4 flex justify-between items-center" style="border-bottom: 1px solid var(--color-gray-200);">
+                <h3 id="modalTitle">Time Entry Details</h3>
+                <button class="btn btn-ghost btn-icon" onclick="closeModal()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="p-4" id="entryDetails">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/websocket.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+    <script src="/js/pages/client-entries.js"></script>
+</body>
+</html>
