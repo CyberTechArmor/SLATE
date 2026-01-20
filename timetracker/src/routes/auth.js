@@ -277,7 +277,7 @@ router.post('/signup', validateBody('signup'), async (req, res) => {
         });
     } catch (err) {
         console.error('Signup error:', err);
-        res.status(500).json({ error: 'An error occurred during signup' });
+        res.status(500).json({ error: 'Signup failed: ' + err.message });
     }
 });
 
@@ -289,7 +289,11 @@ router.get('/has-users', async (req, res) => {
         res.json({ hasUsers });
     } catch (err) {
         console.error('Check users error:', err);
-        res.status(500).json({ error: 'An error occurred' });
+        // If table doesn't exist, no users exist
+        if (err.code === '42P01') {
+            return res.json({ hasUsers: false });
+        }
+        res.status(500).json({ error: 'Database error: ' + err.message });
     }
 });
 

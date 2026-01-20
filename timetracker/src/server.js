@@ -8,6 +8,35 @@ const db = require('./config/database');
 
 // Database migration - ensure schema is up to date
 async function runMigrations() {
+    console.log('Running database migrations...');
+
+    // Wait for database to be ready and init scripts to complete
+    let retries = 10;
+    while (retries > 0) {
+        try {
+            // Check if users table exists
+            const tableCheck = await db.query(`
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables
+                    WHERE table_name = 'users'
+                )
+            `);
+
+            if (tableCheck.rows[0].exists) {
+                console.log('Database tables found');
+                break;
+            }
+
+            console.log(`Waiting for database initialization... (${retries} retries left)`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            retries--;
+        } catch (err) {
+            console.log(`Database not ready: ${err.message}, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            retries--;
+        }
+    }
+
     try {
         // Check if is_admin column exists, add it if not
         const checkColumn = await db.query(`
@@ -20,10 +49,11 @@ async function runMigrations() {
             console.log('Adding is_admin column to users table...');
             await db.query('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE');
             console.log('Migration complete: is_admin column added');
+        } else {
+            console.log('Database schema is up to date');
         }
     } catch (err) {
         console.error('Migration error:', err.message);
-        // Don't crash - table might not exist yet (first run)
     }
 }
 
