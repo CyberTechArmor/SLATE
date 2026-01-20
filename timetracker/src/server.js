@@ -4,6 +4,28 @@ const path = require('path');
 const http = require('http');
 const { setupWebSocket } = require('./websocket/handler');
 const { sessionMiddleware, cleanupSessions, generateCSRFToken } = require('./middleware/auth');
+const db = require('./config/database');
+
+// Database migration - ensure schema is up to date
+async function runMigrations() {
+    try {
+        // Check if is_admin column exists, add it if not
+        const checkColumn = await db.query(`
+            SELECT column_name
+            FROM information_schema.columns
+            WHERE table_name = 'users' AND column_name = 'is_admin'
+        `);
+
+        if (checkColumn.rows.length === 0) {
+            console.log('Adding is_admin column to users table...');
+            await db.query('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE');
+            console.log('Migration complete: is_admin column added');
+        }
+    } catch (err) {
+        console.error('Migration error:', err.message);
+        // Don't crash - table might not exist yet (first run)
+    }
+}
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -146,17 +168,24 @@ setInterval(async () => {
     }
 }, 60 * 60 * 1000);
 
-// Start server
-server.listen(PORT, () => {
-    console.log(`
+// Start server with migrations
+async function startServer() {
+    // Run database migrations
+    await runMigrations();
+
+    server.listen(PORT, () => {
+        console.log(`
 ╔═══════════════════════════════════════════╗
-║         Slate Server                ║
+║              Slate Server                 ║
 ╠═══════════════════════════════════════════╣
-║  Server running on port ${PORT}             ║
-║  Environment: ${process.env.NODE_ENV || 'development'}            ║
+║  Server running on port ${PORT}              ║
+║  Environment: ${process.env.NODE_ENV || 'development'}               ║
 ╚═══════════════════════════════════════════╝
-    `);
-});
+        `);
+    });
+}
+
+startServer();
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
