@@ -217,7 +217,14 @@ async function saveClient() {
 async function deleteClient() {
     if (!currentClientId) return;
 
-    if (confirm('Are you sure you want to delete this client? This will also delete all associated projects and time entries.')) {
+    const confirmed = await confirmAction({
+        title: 'Delete Client',
+        message: 'Are you sure you want to delete this client? This will also delete all associated projects and time entries.',
+        confirmText: 'Delete',
+        type: 'danger'
+    });
+
+    if (confirmed) {
         try {
             await API.clients.delete(currentClientId);
             showToast('Client deleted', 'success');

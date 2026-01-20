@@ -881,3 +881,107 @@ tr:hover td {
     background: var(--color-accent);
     color: var(--color-white);
 }
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal-backdrop);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
+    padding: var(--spacing-4);
+}
+
+.modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-width: 400px;
+    transform: scale(0.95) translateY(-10px);
+    transition: transform var(--transition-base);
+}
+
+.modal-overlay.open .modal {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    padding: var(--spacing-6) var(--spacing-6) var(--spacing-4);
+    text-align: center;
+}
+
+.modal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-4);
+}
+
+.modal-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.modal-icon-info {
+    background: var(--color-info-light);
+    color: var(--color-accent);
+}
+
+.modal-icon-warning {
+    background: var(--color-warning-light);
+    color: var(--color-warning);
+}
+
+.modal-icon-error, .modal-icon-danger {
+    background: var(--color-error-light);
+    color: var(--color-error);
+}
+
+.modal-icon-success {
+    background: var(--color-success-light);
+    color: var(--color-success);
+}
+
+.modal-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin: 0;
+}
+
+.modal-body {
+    padding: 0 var(--spacing-6) var(--spacing-4);
+    text-align: center;
+}
+
+.modal-body p {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+    margin: 0;
+}
+
+.modal-footer {
+    padding: var(--spacing-4) var(--spacing-6) var(--spacing-6);
+    display: flex;
+    gap: var(--spacing-3);
+    justify-content: center;
+}
+
+.modal-footer .btn {
+    flex: 1;
+    max-width: 150px;
+}

@@ -1,11 +1,11 @@
 /* CSS Custom Properties - Design System */
 :root {
-    /* Colors - Primary */
+    /* Colors - Primary (Charcoal) */
     --color-white: #FFFFFF;
     --color-black: #000000;
-    --color-accent: #3B82F6;
-    --color-accent-light: #60A5FA;
-    --color-accent-dark: #2563EB;
+    --color-accent: #374151;
+    --color-accent-light: #4B5563;
+    --color-accent-dark: #1F2937;
 
     /* Gray Scale */
     --color-gray-50: #F9FAFB;
@@ -26,8 +26,8 @@
     --color-warning-light: #FEF3C7;
     --color-error: #EF4444;
     --color-error-light: #FEE2E2;
-    --color-info: #3B82F6;
-    --color-info-light: #DBEAFE;
+    --color-info: #6B7280;
+    --color-info-light: #F3F4F6;
 
     /* Typography */
     --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;

@@ -160,6 +160,93 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
+// Modal component
+function showModal({ title, message, confirmText = 'Confirm', cancelText = 'Cancel', type = 'info', onConfirm, onCancel }) {
+    // Remove existing modals
+    document.querySelectorAll('.modal-overlay').forEach(m => m.remove());
+
+    const iconMap = {
+        info: 'info',
+        warning: 'alert-triangle',
+        error: 'alert-circle',
+        success: 'check-circle',
+        danger: 'trash-2'
+    };
+
+    const modal = createElement('div', {
+        className: 'modal-overlay',
+        innerHTML: `
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="modal-icon modal-icon-${type}">
+                        <i data-lucide="${iconMap[type] || 'info'}"></i>
+                    </div>
+                    <h3 class="modal-title">${title}</h3>
+                </div>
+                <div class="modal-body">
+                    <p>${message}</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary modal-cancel">${cancelText}</button>
+                    <button class="btn ${type === 'danger' ? 'btn-danger' : 'btn-primary'} modal-confirm">${confirmText}</button>
+                </div>
+            </div>
+        `
+    });
+
+    document.body.appendChild(modal);
+    lucide.createIcons();
+
+    // Animate in
+    requestAnimationFrame(() => modal.classList.add('open'));
+
+    const closeModal = () => {
+        modal.classList.remove('open');
+        setTimeout(() => modal.remove(), 200);
+    };
+
+    modal.querySelector('.modal-cancel').addEventListener('click', () => {
+        closeModal();
+        if (onCancel) onCancel();
+    });
+
+    modal.querySelector('.modal-confirm').addEventListener('click', () => {
+        closeModal();
+        if (onConfirm) onConfirm();
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+            if (onCancel) onCancel();
+        }
+    });
+
+    // Handle escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+            if (onCancel) onCancel();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
+}
+
+// Confirm dialog using modal
+function confirmAction({ title, message, confirmText = 'Confirm', type = 'warning' }) {
+    return new Promise((resolve) => {
+        showModal({
+            title,
+            message,
+            confirmText,
+            type,
+            onConfirm: () => resolve(true),
+            onCancel: () => resolve(false)
+        });
+    });
+}
+
 // Loading state helpers
 function showLoading(containerId) {
     const container = document.getElementById(containerId);
@@ -287,7 +374,13 @@ function initCommonUI() {
     const userProfile = document.getElementById('userProfile');
     if (userProfile) {
         userProfile.addEventListener('click', async () => {
-            if (confirm('Are you sure you want to log out?')) {
+            const confirmed = await confirmAction({
+                title: 'Log Out',
+                message: 'Are you sure you want to log out?',
+                confirmText: 'Log Out',
+                type: 'info'
+            });
+            if (confirmed) {
                 try {
                     const isClientPortal = window.location.pathname.startsWith('/client/');
                     await (isClientPortal ? API.auth.clientLogout() : API.auth.logout());
