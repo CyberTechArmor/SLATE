@@ -57,7 +57,7 @@ fi
 # Clone repository
 echo ""
 echo "Cloning Slate from CyberTechArmor/SLATE..."
-git clone --depth 1 https://github.com/CyberTechArmor/SLATE.git "$INSTALL_DIR-temp"
+git clone --depth 1 -b claude/time-tracking-app-IbshS https://github.com/CyberTechArmor/SLATE.git "$INSTALL_DIR-temp"
 mv "$INSTALL_DIR-temp/timetracker" "$INSTALL_DIR"
 rm -rf "$INSTALL_DIR-temp"
 
