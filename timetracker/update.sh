@@ -32,12 +32,45 @@ echo ""
 echo "Stopping current containers..."
 $COMPOSE_CMD down
 
-# Pull latest changes
+# Pull latest changes - handle non-git directories
 echo ""
 echo "Pulling latest changes..."
-git pull origin main 2>/dev/null || git pull origin master 2>/dev/null || {
-    echo "Note: Could not pull from git (may be a local install)"
-}
+
+if [ -d ".git" ]; then
+    # It's a git repo, pull normally
+    git pull origin main 2>/dev/null || git pull origin master 2>/dev/null || {
+        echo "Warning: Could not pull from git"
+    }
+else
+    # Not a git repo, download latest from GitHub
+    echo "Downloading latest version from GitHub..."
+    TEMP_DIR=$(mktemp -d)
+
+    if command -v curl &> /dev/null; then
+        curl -sL https://github.com/CyberTechArmor/SLATE/archive/refs/heads/main.tar.gz | tar xz -C "$TEMP_DIR"
+    elif command -v wget &> /dev/null; then
+        wget -qO- https://github.com/CyberTechArmor/SLATE/archive/refs/heads/main.tar.gz | tar xz -C "$TEMP_DIR"
+    else
+        echo "Error: curl or wget is required for updates"
+        exit 1
+    fi
+
+    # Copy updated files (preserve .env)
+    if [ -f ".env" ]; then
+        cp .env "$TEMP_DIR/.env.backup"
+    fi
+
+    # Copy new files
+    cp -r "$TEMP_DIR"/SLATE-main/timetracker/* "$SCRIPT_DIR/"
+
+    # Restore .env
+    if [ -f "$TEMP_DIR/.env.backup" ]; then
+        cp "$TEMP_DIR/.env.backup" .env
+    fi
+
+    rm -rf "$TEMP_DIR"
+    echo "Latest version downloaded successfully"
+fi
 
 # Rebuild and start
 echo ""
@@ -47,7 +80,7 @@ $COMPOSE_CMD up -d --build
 # Wait for services
 echo ""
 echo "Waiting for services to start..."
-sleep 10
+sleep 15
 
 # Check status
 if $COMPOSE_CMD ps | grep -q "running\|Up"; then
