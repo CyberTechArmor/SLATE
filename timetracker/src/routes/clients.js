@@ -21,13 +21,13 @@ router.get('/', async (req, res) => {
 
         if (status !== 'all') {
             paramCount++;
-            whereClause += `WHERE status = $${paramCount}`;
+            whereClause += `WHERE c.status = $${paramCount}`;
             params.push(status);
         }
 
         if (search) {
             paramCount++;
-            const searchCondition = `(name ILIKE $${paramCount} OR contact_name ILIKE $${paramCount} OR email ILIKE $${paramCount})`;
+            const searchCondition = `(c.name ILIKE $${paramCount} OR c.contact_name ILIKE $${paramCount} OR c.email ILIKE $${paramCount})`;
             whereClause += whereClause ? ` AND ${searchCondition}` : `WHERE ${searchCondition}`;
             params.push(`%${search}%`);
         }
