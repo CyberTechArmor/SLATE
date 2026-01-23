@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Inquiry - Single Line Install Script
-# Usage: curl -fsSL https://raw.githubusercontent.com/CyberTechArmor/SLATE/main/inquiry/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/CyberTechArmor/INQUIRY/main/install.sh | bash
 
 set -e
 
@@ -56,10 +56,8 @@ fi
 
 # Clone repository
 echo ""
-echo "Cloning Inquiry from CyberTechArmor/SLATE..."
-git clone --depth 1 https://github.com/CyberTechArmor/SLATE.git "$INSTALL_DIR-temp"
-mv "$INSTALL_DIR-temp/inquiry" "$INSTALL_DIR"
-rm -rf "$INSTALL_DIR-temp"
+echo "Cloning Inquiry from CyberTechArmor/INQUIRY..."
+git clone --depth 1 https://github.com/CyberTechArmor/INQUIRY.git "$INSTALL_DIR"
 
 cd "$INSTALL_DIR"
 
@@ -117,7 +115,7 @@ fi
 echo ""
 echo "Running health check..."
 for i in {1..10}; do
-    if curl -s http://localhost:3100/api/health | grep -q "ok"; then
+    if curl -s http://localhost:5101/api/health | grep -q "ok"; then
         echo "✓ Health check passed"
         break
     fi
@@ -132,13 +130,13 @@ echo "╔═══════════════════════�
 echo "║    Inquiry installed successfully!        ║"
 echo "╚═══════════════════════════════════════════╝"
 echo ""
-echo "Access the application at: http://localhost:3100"
+echo "Access the application at: http://localhost:5101"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  CREATE YOUR ACCOUNT TO GET STARTED"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "1. Go to http://localhost:3100"
+echo "1. Go to http://localhost:5101"
 echo "2. Click 'Sign up' to create an account"
 echo "3. Start cataloging your questions and ideas!"
 echo ""
