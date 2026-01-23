@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  body {
+    @apply bg-white text-charcoal-900 font-sans;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
+           transition-all duration-150 ease-in-out
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-charcoal-500
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-charcoal-900 text-white
+           hover:bg-charcoal-800
+           active:bg-charcoal-950;
+  }
+
+  .btn-secondary {
+    @apply btn bg-charcoal-100 text-charcoal-900
+           hover:bg-charcoal-200
+           active:bg-charcoal-300;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-charcoal-700
+           hover:bg-charcoal-100
+           active:bg-charcoal-200;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white
+           hover:bg-red-700
+           active:bg-red-800
+           focus:ring-red-500;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 rounded-lg border border-charcoal-200 bg-white
+           text-charcoal-900 placeholder-charcoal-400
+           transition-colors duration-150
+           focus:outline-none focus:border-charcoal-400 focus:ring-2 focus:ring-charcoal-100
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-charcoal-50;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-charcoal-700 mb-1;
+  }
+
+  .card {
+    @apply bg-white border border-charcoal-200 rounded-xl shadow-sm;
+  }
+
+  .link {
+    @apply text-charcoal-700 underline underline-offset-2
+           hover:text-charcoal-900
+           transition-colors duration-150;
+  }
+}
+
+/* Markdown editor customization */
+.w-md-editor {
+  @apply border border-charcoal-200 rounded-lg !important;
+  --md-editor-background-color: #ffffff !important;
+  --md-editor-border-color: #c8c8c8 !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+.w-md-editor-toolbar {
+  @apply border-b border-charcoal-200 bg-charcoal-50 !important;
+}
+
+.w-md-editor-content {
+  @apply font-mono !important;
+}
+
+.w-md-editor-preview {
+  @apply font-sans !important;
+}
+
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  font-family: 'JetBrains Mono', Menlo, Monaco, monospace !important;
+}
+
+/* Markdown preview styles */
+.wmde-markdown {
+  @apply text-charcoal-900 !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+.wmde-markdown h1,
+.wmde-markdown h2,
+.wmde-markdown h3,
+.wmde-markdown h4,
+.wmde-markdown h5,
+.wmde-markdown h6 {
+  @apply text-charcoal-950 font-semibold !important;
+}
+
+.wmde-markdown pre {
+  @apply bg-charcoal-50 border border-charcoal-200 rounded-lg !important;
+}
+
+.wmde-markdown code {
+  @apply bg-charcoal-100 px-1 py-0.5 rounded text-sm !important;
+  font-family: 'JetBrains Mono', Menlo, Monaco, monospace !important;
+}
+
+.wmde-markdown pre code {
+  @apply bg-transparent p-0 !important;
+}
+
+.wmde-markdown blockquote {
+  @apply border-l-4 border-charcoal-300 pl-4 italic text-charcoal-600 !important;
+}
+
+.wmde-markdown a {
+  @apply text-charcoal-700 underline hover:text-charcoal-900 !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-charcoal-50;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-charcoal-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-charcoal-400;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  @apply outline-none ring-2 ring-charcoal-500 ring-offset-2;
+}
