@@ -1,0 +1,27 @@
+services:
+  inquiry:
+    build: .
+    container_name: inquiry-app
+    ports:
+      - "5101:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_PATH=/app/data/inquiry.db
+      - UPLOADS_PATH=/app/uploads
+      - JWT_SECRET=${JWT_SECRET}
+      - CLIENT_URL=http://localhost:5101
+    volumes:
+      - inquiry-data:/app/data
+      - inquiry-uploads:/app/uploads
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  inquiry-data:
+  inquiry-uploads:
