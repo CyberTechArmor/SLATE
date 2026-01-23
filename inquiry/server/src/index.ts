@@ -89,12 +89,22 @@ app.get('/api/health', (_req, res) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  const clientDistPath = path.resolve('../client/dist');
-  if (fs.existsSync(clientDistPath)) {
+  // In Docker, client is at /app/client/dist; in local build, it's ../client/dist
+  const possiblePaths = [
+    path.resolve(process.cwd(), 'client/dist'),
+    path.resolve(process.cwd(), '../client/dist'),
+  ];
+
+  const clientDistPath = possiblePaths.find(p => fs.existsSync(p));
+
+  if (clientDistPath) {
+    console.log(`Serving static files from: ${clientDistPath}`);
     app.use(express.static(clientDistPath));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(clientDistPath, 'index.html'));
     });
+  } else {
+    console.warn('Client dist folder not found. Static file serving disabled.');
   }
 }
 
